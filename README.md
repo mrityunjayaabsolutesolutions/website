@@ -49,6 +49,10 @@ Edit `src/data/site.ts` for company name, tagline, services, email, and phone.
 3. (Optional) **Settings → Secrets → Actions**: add `PUBLIC_WEB3FORMS_ACCESS_KEY` for the contact form in production.
 4. Push to `main` — the workflow builds and deploys automatically.
 
+## Google Search Console
+
+See **[docs/GOOGLE_SEARCH_CONSOLE.md](docs/GOOGLE_SEARCH_CONSOLE.md)** for verification, sitemap submission, and indexing.
+
 ## Troubleshooting DNS / Pages errors
 
 See **[docs/DNS_AND_DEPLOY.md](docs/DNS_AND_DEPLOY.md)** — includes fixing wrong A records and GoDaddy `www` conflicts.
