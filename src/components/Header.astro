@@ -1,0 +1,139 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import { nav, site } from '../data/site';
+import Icon from './Icon.astro';
+
+const hasLogo =
+	fs.existsSync(path.join(process.cwd(), 'public/logo.svg')) ||
+	fs.existsSync(path.join(process.cwd(), 'public/logo.png'));
+const logoSrc = fs.existsSync(path.join(process.cwd(), 'public/logo.png'))
+	? '/logo.png'
+	: fs.existsSync(path.join(process.cwd(), 'public/logo.svg'))
+		? '/logo.svg'
+		: '/logo.png';
+---
+
+<header
+	class="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-navy-950/80 backdrop-blur-xl transition-shadow duration-300"
+	id="site-header"
+>
+	<div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+		<a href="#home" class="group flex items-center gap-3">
+			{
+				hasLogo ? (
+					<img
+						src={logoSrc}
+						alt={site.name}
+						class="h-11 w-auto max-w-[200px] object-contain object-left transition-transform duration-300 group-hover:scale-[1.02]"
+						width="200"
+						height="44"
+						loading="eager"
+						decoding="async"
+					/>
+				) : (
+					<span
+						class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-400 font-sans text-sm font-bold text-navy-950 shadow-lg shadow-teal-500/20 transition-transform duration-300 group-hover:scale-105"
+						aria-hidden="true"
+					>
+						{site.shortName}
+					</span>
+				)
+			}
+			<span class="hidden font-sans text-sm font-semibold tracking-tight text-white sm:block">
+				{site.name}
+			</span>
+		</a>
+
+		<nav class="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+			{
+				nav.map((item) => (
+					<a
+						href={item.href}
+						class="rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition-colors duration-200 hover:bg-white/5 hover:text-white"
+					>
+						{item.label}
+					</a>
+				))
+			}
+		</nav>
+
+		<div class="hidden md:block">
+			<a
+				href="#contact"
+				class="inline-flex items-center gap-2 rounded-xl bg-teal-500 px-4 py-2.5 text-sm font-semibold text-navy-950 transition-all duration-200 hover:bg-teal-400 hover:shadow-lg hover:shadow-teal-500/25"
+			>
+				Get in touch
+				<Icon name="arrow" class="h-4 w-4" />
+			</a>
+		</div>
+
+		<button
+			type="button"
+			class="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 text-white md:hidden"
+			aria-expanded="false"
+			aria-controls="mobile-menu"
+			id="menu-toggle"
+		>
+			<span class="sr-only">Open menu</span>
+			<Icon name="menu" class="h-5 w-5" id="menu-icon-open" />
+			<Icon name="close" class="hidden h-5 w-5" id="menu-icon-close" />
+		</button>
+	</div>
+
+	<div
+		class="glass hidden border-t border-white/10 md:hidden"
+		id="mobile-menu"
+	>
+		<nav class="flex flex-col gap-1 px-4 py-4" aria-label="Mobile navigation">
+			{
+				nav.map((item) => (
+					<a
+						href={item.href}
+						class="mobile-nav-link rounded-lg px-3 py-3 text-sm font-medium text-slate-300 hover:bg-white/5 hover:text-white"
+					>
+						{item.label}
+					</a>
+				))
+			}
+			<a
+				href="#contact"
+				class="mobile-nav-link mt-2 rounded-xl bg-teal-500 px-4 py-3 text-center text-sm font-semibold text-navy-950"
+			>
+				Get in touch
+			</a>
+		</nav>
+	</div>
+</header>
+
+<script>
+	const toggle = document.getElementById('menu-toggle');
+	const menu = document.getElementById('mobile-menu');
+	const iconOpen = document.getElementById('menu-icon-open');
+	const iconClose = document.getElementById('menu-icon-close');
+
+	toggle?.addEventListener('click', () => {
+		const isOpen = menu?.classList.toggle('hidden') === false;
+		toggle.setAttribute('aria-expanded', String(isOpen));
+		iconOpen?.classList.toggle('hidden', isOpen);
+		iconClose?.classList.toggle('hidden', !isOpen);
+	});
+
+	document.querySelectorAll('.mobile-nav-link').forEach((link) => {
+		link.addEventListener('click', () => {
+			menu?.classList.add('hidden');
+			toggle?.setAttribute('aria-expanded', 'false');
+			iconOpen?.classList.remove('hidden');
+			iconClose?.classList.add('hidden');
+		});
+	});
+
+	const header = document.getElementById('site-header');
+	window.addEventListener(
+		'scroll',
+		() => {
+			header?.classList.toggle('shadow-lg shadow-black/20', window.scrollY > 8);
+		},
+		{ passive: true },
+	);
+</script>
